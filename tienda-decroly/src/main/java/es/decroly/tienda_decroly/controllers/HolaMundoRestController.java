@@ -3,6 +3,7 @@ package es.decroly.tienda_decroly.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,6 +22,11 @@ public class HolaMundoRestController {
     public String saludoPersonalizado (@PathVariable String nombre){
 
         return "Hola " + nombre + " Bienvenido a la tienda de Decroly";
+    }
+
+    @GetMapping("/buscar")
+    public String buscar(@RequestParam(defaultValue = "todo")String texto){
+        return "Buscando productos que contengan " + texto;
     }
 
 
