@@ -1,7 +1,9 @@
 package es.decroly.tienda_decroly.controllers;
 
 import es.decroly.tienda_decroly.domain.Producto;
-import org.apache.coyote.http11.filters.IdentityInputFilter;
+import es.decroly.tienda_decroly.exceptions.BadRequestException;
+import es.decroly.tienda_decroly.exceptions.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,39 +60,29 @@ public class ProductoRestController {
     @PostMapping()
     public ResponseEntity<Producto> crear(@RequestBody Producto producto) {
 
-        return nuevo(producto);
+        Producto prd = validate(producto.getNombre(),producto.getPrecio(),producto.getStock());
+
+        return nuevo(prd);
     }
 
-
-
-
-
-
-
-
-    public Optional<Producto> buscar(Long id) {
+    public Producto findById(Long id) {
         for (Producto p : productos) {
             if (p.getId().equals(id)) {
-                return Optional.of(p);
+                return p;
             }
         }
-        return Optional.empty();
+        throw  new NotFoundException("No existe el producto con el id: " + id);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable Long id) {
 
-        Iterator<Producto> it = productos.iterator();
 
+        Producto producto = findById(id);
 
-        while (it.hasNext()) {
-            Producto producto = it.next();
-            if (producto.getId().equals(id)) {
-                it.remove();
-                return ResponseEntity.notFound().build();
-            }
-        }
-        return ResponseEntity.noContent().build();
+        productos.remove(producto);
 
 //        Producto producto = getProductoId(id);
 //        productos.remove(producto);
@@ -100,20 +92,17 @@ public class ProductoRestController {
     public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto producto) {
 
 
-        Optional<Producto> existe = buscar(id);
-
-        if (existe.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Producto prod = existe.get();
+        Producto existe = findById(id);
 
 
-        prod.setNombre(producto.getNombre());
-        prod.setPrecio(producto.getPrecio());
-        prod.setStock(producto.getStock());
 
-        return ResponseEntity.ok(prod);
+
+
+        existe.setNombre(producto.getNombre());
+        existe.setPrecio(producto.getPrecio());
+        existe.setStock(producto.getStock());
+
+        return ResponseEntity.ok(existe);
 
 
 //        Optional<Producto> existente = buscar(id);
@@ -139,5 +128,18 @@ public class ProductoRestController {
         return ResponseEntity.notFound().build();//404
     }
 
+    public Producto validate(String nombre, double precio, int stock) {
+
+        if (nombre == null || nombre.isBlank()) {
+            throw new BadRequestException("EL nombre esta vacio");
+        } else if (precio < 0) {
+            throw new BadRequestException("Precio negativo");
+        } else if (stock < 0) {
+            throw new BadRequestException("Stock negativo");
+        }
+
+        return new Producto(null, nombre, precio, stock);
+
+    }
 }
 
