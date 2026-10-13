@@ -56,13 +56,22 @@ public class ProductoRestController {
 
 
 
-
     @PostMapping()
-    public ResponseEntity<Producto> crear(@RequestBody Producto producto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Producto crear(@RequestBody Producto producto) {
 
-        Producto prd = validate(producto.getNombre(),producto.getPrecio(),producto.getStock());
+        validar(producto);
 
-        return nuevo(prd);
+        long id = secuencia.incrementAndGet();
+
+        Producto nuevoProducto = new Producto(id,producto.getNombre(),producto.getPrecio(),producto.getStock());
+
+        productos.add(nuevoProducto);
+
+
+        return nuevoProducto;
+
+
     }
 
     public Producto findById(Long id) {
@@ -125,21 +134,34 @@ public class ProductoRestController {
                 return ResponseEntity.ok(p);
             }
         }
-        return ResponseEntity.notFound().build();//404
+        throw new NotFoundException("Recurso No encontrado");//404
     }
 
-    public Producto validate(String nombre, double precio, int stock) {
-
-        if (nombre == null || nombre.isBlank()) {
-            throw new BadRequestException("EL nombre esta vacio");
-        } else if (precio < 0) {
-            throw new BadRequestException("Precio negativo");
-        } else if (stock < 0) {
-            throw new BadRequestException("Stock negativo");
+    private void validar(Producto p) {
+        if (p.getNombre() == null || p.getNombre().isBlank()) {
+            throw new BadRequestException("El nombre es obligatorio");
         }
-
-        return new Producto(null, nombre, precio, stock);
-
+        if (p.getPrecio() < 0) {
+            throw new BadRequestException("Precio no puede ser negativo");
+        }
+        if (p.getStock() < 0) {
+            throw new BadRequestException("Stock no puede ser negativo");
+        }
     }
+
+
+//    public Producto validate(String nombre, double precio, int stock) {
+//
+//        if (nombre == null || nombre.isBlank()) {
+//            throw new BadRequestException("EL nombre esta vacio");
+//        } else if (precio < 0) {
+//            throw new BadRequestException("Precio negativo");
+//        } else if (stock < 0) {
+//            throw new BadRequestException("Stock negativo");
+//        }
+//
+//        return new Producto(null, nombre, precio, stock);
+//
+//    }
 }
 
