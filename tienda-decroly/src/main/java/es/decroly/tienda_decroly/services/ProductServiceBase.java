@@ -3,6 +3,7 @@ package es.decroly.tienda_decroly.services;
 import es.decroly.tienda_decroly.domain.Producto;
 import es.decroly.tienda_decroly.exceptions.BadRequestException;
 import es.decroly.tienda_decroly.exceptions.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 
+@Slf4j
 public abstract class ProductServiceBase implements ProductService {
 
 
@@ -52,6 +54,7 @@ public abstract class ProductServiceBase implements ProductService {
         producto.setId(secuencia.incrementAndGet());
 
         productos.add(producto);
+        log.info("Producto creado: {}", producto.getId());
         return producto;
     }
 
