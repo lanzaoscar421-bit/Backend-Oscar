@@ -1,8 +1,7 @@
 package es.decroly.biblioteca.service.Book;
 
 import es.decroly.biblioteca.domain.Book;
-import es.decroly.biblioteca.domain.Category;
-import es.decroly.biblioteca.service.Category.CategoryService;
+import es.decroly.biblioteca.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -29,10 +28,39 @@ public abstract class BookServiceBase  implements BookService {
     }
 
 
+
+    //Ver todos los libros
     @Override
     public List<Book> listBook(){
         return books;
     }
+
+
+    //Filtrar los libros por id
+    @Override
+    public Book listBookById(Long id){
+
+        for (Book book : books) {
+            if (book.getId().equals(id)) {
+                return book;
+            }
+        }
+        throw new NotFoundException("No Existe el libro que busca");
+    }
+
+    // Ver todos los libros disponibles
+    public List<Book> enableBooks(){
+        List<Book> disponibles = new ArrayList<>();
+
+        for (Book book : books) {
+            if (book.getAvailable() > 0) {
+                disponibles.add(book);
+            }
+        }
+
+        return disponibles;
+    }
+
 
 
 
