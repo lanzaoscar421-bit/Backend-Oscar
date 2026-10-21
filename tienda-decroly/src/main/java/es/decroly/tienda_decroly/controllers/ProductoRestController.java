@@ -69,7 +69,6 @@ public class ProductoRestController {
 
     @DeleteMapping("/{id}")
     public void borrar(@PathVariable Long id) {
-
         productService.borrar(id);
     }
 

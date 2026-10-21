@@ -1,4 +1,4 @@
-package es.decroly.biblioteca.service;
+package es.decroly.biblioteca.service.Category;
 
 
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategoryServiceMemoria extends CategoryServiceBase{
+public class CategoryServiceMemoria extends CategoryServiceBase {
 
 
 
