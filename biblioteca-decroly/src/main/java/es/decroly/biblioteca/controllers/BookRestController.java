@@ -27,8 +27,24 @@ public class BookRestController {
         return bookService.listBookById(id);
     }
 
-    @GetMapping("/{available}")
+    //En este caso no se pone el {} Por que no se insertaran valores
+    @GetMapping("/available")
     public List<Book> getBooksEnable(){
         return bookService.enableBooks();
+    }
+
+    @PostMapping
+    public Book addBook(@RequestBody Book book){
+        return bookService.addBook(book);
+    }
+
+    @PutMapping("/{id}")
+    public Book updateBook(@PathVariable Long id,@RequestBody Book book){
+        return bookService.updateBook(id,book);
+    }
+    
+    @DeleteMapping("/{id}")
+    public void deleteBook(@PathVariable Long id){
+        bookService.deleteBook(id);
     }
 }

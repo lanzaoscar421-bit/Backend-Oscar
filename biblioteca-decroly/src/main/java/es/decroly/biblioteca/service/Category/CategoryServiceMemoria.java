@@ -15,8 +15,8 @@ public class CategoryServiceMemoria extends CategoryServiceBase {
     public CategoryServiceMemoria() {
 
         super(List.of(
-                new Category(1L,"Terror","Miedo"),
-                new Category(2L,"Seinen","Mangas para gente mas adulta")
+                new Category(1L, "Manga", "Cómic japonés"),
+                new Category(2L, "Cómic", "Cómic occidental y novela gráfica")
         ));
     }
 

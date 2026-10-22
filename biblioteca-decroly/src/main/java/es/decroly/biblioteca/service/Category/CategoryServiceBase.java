@@ -3,6 +3,7 @@ package es.decroly.biblioteca.service.Category;
 import es.decroly.biblioteca.domain.Category;
 import es.decroly.biblioteca.exceptions.BadRequestException;
 import es.decroly.biblioteca.exceptions.NotFoundException;
+import es.decroly.biblioteca.exceptions.ValidateException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public abstract class CategoryServiceBase implements CategoryService {
     //Metodo de Crear Cataegorias
     public Category addCategory(Category cat) {
 
-        validar(cat);
+        validar(cat, null);
 
         cat.setId(secuencia.incrementAndGet());
 
@@ -75,7 +76,7 @@ public abstract class CategoryServiceBase implements CategoryService {
 
     @Override
     public Category updateCategory(Long id,Category cat) {
-        validar(cat);
+        validar(cat , id);
 
 
         Category category = listByID(id);
@@ -104,12 +105,23 @@ public abstract class CategoryServiceBase implements CategoryService {
 
     //Metodo de Validaciones
 
-    private void validar(Category c) {
+    private void validar(Category c, Long id) {
         if (c.getName() == null || c.getName().isBlank()) {
-            throw new BadRequestException("El nombre es obligatorio");
+            throw new ValidateException("El nombre es obligatorio");
         }
-        if (c.getDescription() == null || c.getDescription().isBlank()) {
-            throw new BadRequestException("La descripcion es Obligatoria");
+        if (c.getName().trim().length() > 50) {
+            throw new ValidateException("El nombre no puede superar los 50 caracteres");
+        }
+
+        for (Category existente : categories) {
+
+            boolean esOtra = id == null || !existente.getId().equals(id);
+
+            if (esOtra && existente.getName().equalsIgnoreCase(c.getName().trim())) {
+
+                throw new ValidateException("Ya existe una categoria con ese nombre");
+
+            }
         }
     }
 

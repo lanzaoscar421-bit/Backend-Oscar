@@ -30,5 +30,14 @@ public class GlobalErrorHandler {
         return problemdetail;
 
     }
+
+    @ExceptionHandler(ValidateException.class)
+    public ProblemDetail validacion(ValidateException ex) {
+        ProblemDetail problemdetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, ex.getMessage());
+
+        problemdetail.setTitle("Error de Validacion");
+        return problemdetail;
+    }
 }
 
