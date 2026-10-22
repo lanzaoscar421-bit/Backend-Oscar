@@ -1,6 +1,7 @@
 package es.decroly.biblioteca.service.Book;
 
 import es.decroly.biblioteca.domain.Book;
+import es.decroly.biblioteca.domain.Category;
 import es.decroly.biblioteca.exceptions.BadRequestException;
 import es.decroly.biblioteca.exceptions.NotFoundException;
 import es.decroly.biblioteca.exceptions.ValidateException;
@@ -134,8 +135,17 @@ public abstract class BookServiceBase  implements BookService {
         if (b.getCategoryId() == null) {
             throw new ValidateException("La categoria es obligatoria");
         }
-        boolean categoriaExiste = categoryService.listCategory().stream()
-                .anyMatch(c -> c.getId().equals(b.getCategoryId()));
+
+
+        boolean categoriaExiste = false;
+
+        for (Category c : categoryService.listCategory()) {
+            if (c.getId().equals(b.getCategoryId())) {
+                categoriaExiste = true;
+                break;
+            }
+        }
+
         if (!categoriaExiste) {
             throw new ValidateException("La categoria indicada no existe");
         }
