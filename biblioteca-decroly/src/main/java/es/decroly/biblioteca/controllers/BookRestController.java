@@ -11,7 +11,7 @@ import java.util.List;
 @Tag(name = "Libro", description = "Libros")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/book")
+@RequestMapping("api/libro")
 public class BookRestController {
 
     private final BookService bookService;

@@ -1,4 +1,8 @@
 package es.decroly.biblioteca.service.Library;
 
-public class LibraryService {
+import es.decroly.biblioteca.dto.InfoLibraryDto;
+
+public interface LibraryService {
+
+     InfoLibraryDto getLibrary();
 }
