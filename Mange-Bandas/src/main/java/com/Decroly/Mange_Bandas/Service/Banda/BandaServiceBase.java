@@ -1,7 +1,11 @@
 package com.Decroly.Mange_Bandas.Service.Banda;
 
 import com.Decroly.Mange_Bandas.domain.Banda;
+import com.Decroly.Mange_Bandas.dto.BandaDto;
+import com.Decroly.Mange_Bandas.exceptions.BadRequestException;
+import com.Decroly.Mange_Bandas.exceptions.ConflictException;
 import com.Decroly.Mange_Bandas.exceptions.NotFoundException;
+import com.Decroly.Mange_Bandas.exceptions.ValidateException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -58,11 +62,35 @@ public abstract class BandaServiceBase implements BandaService {
     }
 
     @Override
-    public Banda addBanda(Banda banda){
+    public Banda addBanda(BandaDto dto){
+
+        validarBanda(dto, null);
+
+        Banda banda = new Banda();
 
         banda.setId(secuencia.incrementAndGet());
+        banda.setNombre(dto.getNombre());
+        banda.setCategoria(dto.getCategoria());
+        banda.setIntregantes(dto.getIntregantes());
 
         bandas.add(banda);
+
+
+        return banda;
+    }
+
+
+    @Override
+    public Banda updateBanda(Long id, BandaDto bn){
+
+
+        Banda banda = listaBandaId(id);
+
+        validarBanda(bn , id);
+
+        banda.setNombre(bn.getNombre());
+        banda.setCategoria(bn.getCategoria());
+        banda.setIntregantes(bn.getIntregantes());
 
         return banda;
     }
@@ -88,5 +116,50 @@ public abstract class BandaServiceBase implements BandaService {
         }
         return resultado;
     }
+
+    //Validar
+    private void validarBanda(BandaDto banda, Long id) {
+
+        if (banda.getNombre() == null || banda.getNombre().isBlank()) {
+            throw new BadRequestException("El nombre de la banda no puede estar vacío");
+        }
+
+        if (banda.getIntregantes() <= 0) {
+            throw new ValidateException("La banda debe tener al menos un integrante");
+        }
+
+        if (banda.getCategoria() == null) {
+            throw new BadRequestException("La categoría no puede estar vacía");
+        }
+        for (Banda b : bandas) {
+
+            if (b.getNombre().equalsIgnoreCase(banda.getNombre())
+                    && !b.getId().equals(id)) {
+
+                throw new ConflictException("Ya existe una banda con ese nombre");
+            }
+        }
+
+    }
+//    private void validarBanda(BandaDto banda, Long id) {
+//
+//        if (banda.getNombre() == null || banda.getNombre().isBlank()) {
+//            throw new ValidateException("El nombre de la banda no puede estar vacío");
+//        }
+//        if (banda.getIntregantes() <= 0) {
+//            throw new ValidateException("La banda debe tener al menos un integrante");
+//        }
+//        if (banda.getCategoria() == null) {
+//            throw new ValidateException("La categoría no puede estar vacía");
+//        }
+//
+//        for (Banda b : bandas) {
+//            boolean esOtra = id == null || !b.getId().equals(id);
+//
+//            if (esOtra && b.getNombre().equalsIgnoreCase(banda.getNombre().trim())) {
+//                throw new ConflictException("Ya existe una banda con ese nombre");
+//            }
+//        }
+
 
 }

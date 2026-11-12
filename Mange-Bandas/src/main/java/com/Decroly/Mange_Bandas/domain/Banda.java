@@ -13,7 +13,7 @@ public class Banda {
 
     private Long id;
     private String nombre;
-    private Long Categoria;
+    private Long categoria;
     private int intregantes;
 
 }

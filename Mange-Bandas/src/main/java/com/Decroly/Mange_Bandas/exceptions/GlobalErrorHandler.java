@@ -39,5 +39,14 @@ public class GlobalErrorHandler {
         problemdetail.setTitle("Error de Validacion");
         return problemdetail;
     }
+    @ExceptionHandler(ConflictException.class)
+    public ProblemDetail conflicto(ConflictException ex) {
+
+        ProblemDetail problemdetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, ex.getMessage());
+
+        problemdetail.setTitle("Conflicto");
+        return problemdetail;
+    }
 }
 
