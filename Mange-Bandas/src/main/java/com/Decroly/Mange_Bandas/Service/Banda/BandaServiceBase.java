@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
-public abstract class BandaServiceBase implements BandaService {
+    public abstract class BandaServiceBase implements BandaService {
 
 
     private final List<Banda> bandas;
